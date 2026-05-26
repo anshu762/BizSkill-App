@@ -18,6 +18,7 @@ import {
   Sparkles,
   Handshake,
 } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 export default async function ProfilePage({
   params,
@@ -65,6 +66,11 @@ export default async function ProfilePage({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-500/15 via-transparent to-transparent" />
 
       <div className="relative mx-auto max-w-5xl px-6 py-12">
+        {/* Back Button */}
+        <div className="mb-6">
+          <BackButton />
+        </div>
+
         {/* Hero Card */}
         <Card className="relative overflow-hidden border-white/10 bg-gradient-to-br from-indigo-500/[0.07] via-purple-500/[0.05] to-pink-500/[0.07]">
           {/* Decorative Glow */}
@@ -264,15 +270,15 @@ export default async function ProfilePage({
           </Tabs>
         </section>
 
-        {/* Request Exchange CTA */}
-        {!isOwnProfile && session && (
+        {/* Exchange CTA */}
+        {session && (
           <div className="mt-12 flex justify-center">
             <Button
               size="lg"
               className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
             >
               <Handshake className="mr-2 h-5 w-5" />
-              Request Skill Exchange
+              {isOwnProfile ? "Browse Marketplace" : "Request Skill Exchange"}
             </Button>
           </div>
         )}
