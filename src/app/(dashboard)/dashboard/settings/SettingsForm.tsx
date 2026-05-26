@@ -19,8 +19,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Trash2, Plus, Coins } from "lucide-react";
+import { Loader2, Trash2, Coins } from "lucide-react";
 import { toast } from "sonner";
+import { updateProfile, deleteSkill } from "@/lib/actions";
 
 const categories = [
   "GRAPHIC_DESIGN","SOCIAL_MEDIA","PHOTOGRAPHY","WEBSITE",
@@ -95,19 +96,14 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
 
   async function onSubmit(data: any) {
     setSaving(true);
-    const payload = {
-      ...data,
-      age: data.age ? Number(data.age) : undefined,
-    };
-    const res = await fetch("/api/profile", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
+    try {
+      await updateProfile({
+        ...data,
+        age: data.age ? Number(data.age) : undefined,
+      });
       toast.success("Profile updated");
       router.refresh();
-    } else {
+    } catch {
       toast.error("Failed to update");
     }
     setSaving(false);
@@ -115,11 +111,11 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
 
   async function handleDeleteSkill(skillId: string) {
     setDeleting(skillId);
-    const res = await fetch(`/api/skills/${skillId}`, { method: "DELETE" });
-    if (res.ok) {
+    try {
+      await deleteSkill(skillId);
       toast.success("Skill deleted");
       router.refresh();
-    } else {
+    } catch {
       toast.error("Failed to delete");
     }
     setDeleting(null);

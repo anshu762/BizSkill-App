@@ -31,25 +31,22 @@ type ExchangeModalProps = {
   otherUserId: string;
   otherUserOffered: SkillItem[];
   currentUserOffered: SkillItem[];
-  currentUserNeeded: SkillItem[];
 };
 
 export function ExchangeModal({
   otherUserId: _otherUserId,
   otherUserOffered,
   currentUserOffered,
-  currentUserNeeded,
 }: ExchangeModalProps) {
   const [open, setOpen] = useState(false);
   const [requestedSkill, setRequestedSkill] = useState("");
-  const [_offerSkill, setOfferSkill] = useState("");
+  const [offerSkill, setOfferSkill] = useState("");
   const [message, setMessage] = useState("");
-  const [_sending, setSending] = useState(false);
+  const [sending, setSending] = useState(false);
 
   async function handleSubmit() {
     // Phase 3: wire actual exchange logic
     setSending(true);
-    // Simulate delay for now
     await new Promise((r) => setTimeout(r, 1000));
     setSending(false);
     setOpen(false);
@@ -59,7 +56,7 @@ export function ExchangeModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <Button
           size="lg"
           className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
@@ -82,77 +79,61 @@ export function ExchangeModal({
                 <SelectValue placeholder="Select a skill..." />
               </SelectTrigger>
               <SelectContent className="border-white/10 bg-gray-950">
-                {otherUserOffered.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    <span className="flex items-center gap-2">
-                      {s.title}
-                      <Badge
-                        variant="outline"
-                        className="border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs"
-                      >
-                        <Coins className="mr-0.5 h-3 w-3" />
-                        {s.coinValue}
-                      </Badge>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* What you offer */}
-          <div className="space-y-2">
-            <Label>I can offer in exchange...</Label>
-            <Select value={_offerSkill} onValueChange={(v) => v && setOfferSkill(v)}>
-              <SelectTrigger className="border-white/10">
-                <SelectValue placeholder="Select a skill..." />
-              </SelectTrigger>
-              <SelectContent className="border-white/10 bg-gray-950">
-                {currentUserOffered.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    <span className="flex items-center gap-2">
-                      {s.title}
-                      <Badge
-                        variant="outline"
-                        className="border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs"
-                      >
-                        <Coins className="mr-0.5 h-3 w-3" />
-                        {s.coinValue}
-                      </Badge>
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Or what you need instead */}
-          {currentUserNeeded.length > 0 && (
-            <div className="space-y-2">
-              <Label>Or I need help with...</Label>
-              <Select value={_offerSkill} onValueChange={(v) => v && setOfferSkill(v)}>
-                <SelectTrigger className="border-white/10">
-                  <SelectValue placeholder="Ask them to help with..." />
-                </SelectTrigger>
-                <SelectContent className="border-white/10 bg-gray-950">
-                  {currentUserNeeded.map((s) => (
+                {otherUserOffered.length === 0 ? (
+                  <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+                    This user hasn't listed any skills yet
+                  </div>
+                ) : (
+                  otherUserOffered.map((s) => (
                     <SelectItem key={s.id} value={s.id}>
                       <span className="flex items-center gap-2">
                         {s.title}
                         <Badge
                           variant="outline"
-                          className="border-purple-500/30 bg-purple-500/10 text-purple-400 text-xs"
+                          className="border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs"
                         >
                           <Coins className="mr-0.5 h-3 w-3" />
                           {s.coinValue}
                         </Badge>
                       </span>
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* What you offer in return */}
+          <div className="space-y-2">
+            <Label>I can offer in exchange...</Label>
+            <Select value={offerSkill} onValueChange={(v) => v && setOfferSkill(v)}>
+              <SelectTrigger className="border-white/10">
+                <SelectValue placeholder="Select a skill..." />
+              </SelectTrigger>
+              <SelectContent className="border-white/10 bg-gray-950">
+                {currentUserOffered.length === 0 ? (
+                  <div className="px-2 py-4 text-center text-sm text-muted-foreground">
+                    You haven't listed any skills yet
+                  </div>
+                ) : (
+                  currentUserOffered.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      <span className="flex items-center gap-2">
+                        {s.title}
+                        <Badge
+                          variant="outline"
+                          className="border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs"
+                        >
+                          <Coins className="mr-0.5 h-3 w-3" />
+                          {s.coinValue}
+                        </Badge>
+                      </span>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
 
           {/* Message */}
           <div className="space-y-2">
@@ -176,11 +157,11 @@ export function ExchangeModal({
               Cancel
             </Button>
             <Button
-              disabled={!canSubmit || _sending}
+              disabled={!canSubmit || sending}
               onClick={handleSubmit}
               className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
             >
-              {_sending ? (
+              {sending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Handshake className="mr-2 h-4 w-4" />

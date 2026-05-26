@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2, Coins, Sparkles } from "lucide-react";
+import { submitOnboarding } from "@/lib/actions";
 
 export function StepPreview() {
   const { data, setStep, reset } = useOnboardingStore();
@@ -18,26 +19,15 @@ export function StepPreview() {
     setLoading(true);
     setError("");
 
-    const res = await fetch("/api/onboarding", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-      let errorMsg = "Something went wrong";
-      try {
-        const d = await res.json();
-        if (typeof d.error === "string") errorMsg = d.error;
-      } catch {}
-      setError(errorMsg);
+    try {
+      await submitOnboarding(data);
+      reset();
+      router.push("/dashboard");
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
       setLoading(false);
-      return;
     }
-
-    reset();
-    router.push("/dashboard");
-    router.refresh();
   }
 
   return (

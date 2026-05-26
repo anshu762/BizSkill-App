@@ -285,15 +285,24 @@ export default async function ProfilePage({
         </section>
 
         {/* Exchange CTA */}
-        {session && (
+        {session && !isOwnProfile && (
           <div className="mt-12 flex justify-center">
-            <Button
-              size="lg"
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40"
+            <ExchangeModal
+              otherUserId={userId}
+              otherUserOffered={offered.map((s) => ({ id: s.id, title: s.title, coinValue: s.coinValue }))}
+              currentUserOffered={currentUser?.skills ?? []}
+            />
+          </div>
+        )}
+        {isOwnProfile && session && (
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/marketplace"
+              className="inline-flex items-center justify-center rounded-md border border-white/10 bg-transparent px-8 py-3 text-sm font-medium text-gray-300 shadow-sm transition-colors hover:bg-white/10 hover:text-white"
             >
               <Handshake className="mr-2 h-5 w-5" />
-              {isOwnProfile ? "Browse Marketplace" : "Request Skill Exchange"}
-            </Button>
+              Browse Marketplace
+            </Link>
           </div>
         )}
       </div>
