@@ -19,10 +19,8 @@ import { useState } from "react";
 
 const navLinks = [
   { href: "/marketplace", label: "Marketplace" },
-  { href: "/feed", label: "Feed" },
-  { href: "/teams", label: "Teams" },
-  { href: "/#features", label: "Features" },
-  { href: "/#how-it-works", label: "How It Works" },
+  { href: "/dashboard/exchanges", label: "Exchanges" },
+  { href: "/dashboard/wallet", label: "Wallet" },
 ];
 
 export function Navbar() {
@@ -94,7 +92,7 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-gray-300 focus:bg-white/10 focus:text-white">
-                    <Link href="/profile/settings" className="flex w-full items-center">
+                    <Link href="/dashboard/settings" className="flex w-full items-center">
                       <Settings className="mr-2 h-4 w-4" />
                       Settings
                     </Link>
