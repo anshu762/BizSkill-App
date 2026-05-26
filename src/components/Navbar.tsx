@@ -10,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuGroup,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -75,14 +76,16 @@ export function Navbar() {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56 border-white/10 bg-gray-900 text-white" align="end">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col">
-                      <span className="text-white">{session.user.name}</span>
-                      <span className="text-xs font-normal text-gray-400">
-                        {session.user.email}
-                      </span>
-                    </div>
-                  </DropdownMenuLabel>
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col">
+                        <span className="text-white">{session.user.name}</span>
+                        <span className="text-xs font-normal text-gray-400">
+                          {session.user.email}
+                        </span>
+                      </div>
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
                   <DropdownMenuSeparator className="bg-white/10" />
                   <DropdownMenuItem className="text-gray-300 focus:bg-white/10 focus:text-white">
                     <Link href="/profile" className="flex w-full items-center">
