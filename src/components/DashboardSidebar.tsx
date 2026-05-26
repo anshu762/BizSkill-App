@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  LayoutDashboard, ShoppingBag, ArrowLeftRight, Wallet, Settings, User, Coins, LogOut,
+  LayoutDashboard, ShoppingBag, ArrowLeftRight, Wallet, Settings, Coins, LogOut,
 } from "lucide-react";
 
 const navLinks = [
