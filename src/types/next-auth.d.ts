@@ -6,6 +6,7 @@ declare module "next-auth" {
     user: {
       id: string;
       bizCoins: number;
+      hasOnboarded: boolean;
     } & DefaultSession["user"];
   }
 }
@@ -13,5 +14,6 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
+    hasOnboarded: boolean;
   }
 }

@@ -20,6 +20,18 @@ enum SkillCategory {
   OTHER
 }
 
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  EXPERT
+}
+
+enum BusinessStage {
+  IDEA
+  BUILDING
+  LAUNCHED
+}
+
 model User {
   id            String   @id @default(cuid())
   name          String?
@@ -31,6 +43,7 @@ model User {
   age           Int?
   location      String?
   bizCoins      Int      @default(100)
+  hasOnboarded  Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -43,15 +56,15 @@ model User {
 }
 
 model BusinessProfile {
-  id              String   @id @default(cuid())
-  userId          String   @unique
+  id              String          @id @default(cuid())
+  userId          String          @unique
   businessName    String
-  industry        String?
+  industry        SkillCategory?
   description     String?
-  stage           String?
+  stage           BusinessStage?
   website         String?
   instagramHandle String?
-  createdAt       DateTime @default(now())
+  createdAt       DateTime        @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -64,9 +77,10 @@ model Skill {
   title       String
   category    SkillCategory
   description String?
-  level       String?
+  level       SkillLevel?
   isOffering  Boolean       @default(true)
   coinValue   Int           @default(10)
+  isDeleted   Boolean       @default(false)
   createdAt   DateTime      @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
