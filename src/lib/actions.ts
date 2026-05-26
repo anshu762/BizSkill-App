@@ -5,8 +5,6 @@ import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
-/* ─────────── Onboarding ─────────── */
-
 const skillSchema = z.object({
   title: z.string().min(1),
   category: z.string(),
@@ -55,48 +53,31 @@ export async function submitOnboarding(formData: unknown) {
       await tx.businessProfile.upsert({
         where: { userId: session.user.id },
         create: {
-          userId: session.user.id,
-          businessName,
-          industry: industry as any,
-          stage: stage as any,
-          website,
-          instagramHandle,
-          description,
+          userId: session.user.id, businessName,
+          industry: industry as any, stage: stage as any,
+          website, instagramHandle, description,
         },
         update: {
-          businessName,
-          industry: industry as any,
-          stage: stage as any,
-          website,
-          instagramHandle,
-          description,
+          businessName, industry: industry as any, stage: stage as any,
+          website, instagramHandle, description,
         },
       });
 
       if (offerSkills.length > 0) {
         await tx.skill.createMany({
           data: offerSkills.map((s) => ({
-            userId: session.user.id,
-            title: s.title,
-            category: s.category as any,
-            description: s.description,
-            level: s.level as any,
-            isOffering: true,
-            coinValue: s.coinValue,
+            userId: session.user.id, title: s.title,
+            category: s.category as any, description: s.description,
+            level: s.level as any, isOffering: true, coinValue: s.coinValue,
           })),
         });
       }
-
       if (needSkills.length > 0) {
         await tx.skill.createMany({
           data: needSkills.map((s) => ({
-            userId: session.user.id,
-            title: s.title,
-            category: s.category as any,
-            description: s.description,
-            level: s.level as any,
-            isOffering: false,
-            coinValue: s.coinValue,
+            userId: session.user.id, title: s.title,
+            category: s.category as any, description: s.description,
+            level: s.level as any, isOffering: false, coinValue: s.coinValue,
           })),
         });
       }
@@ -106,8 +87,6 @@ export async function submitOnboarding(formData: unknown) {
 
   revalidatePath("/dashboard");
 }
-
-/* ─────────── Update Profile ─────────── */
 
 const updateProfileSchema = z.object({
   name: z.string().min(1).optional(),
@@ -138,10 +117,7 @@ export async function updateProfile(formData: unknown) {
     });
 
     if (businessName || industry || stage || website !== undefined || instagramHandle !== undefined || description !== undefined) {
-      const existing = await tx.businessProfile.findUnique({
-        where: { userId: session.user.id },
-      });
-
+      const existing = await tx.businessProfile.findUnique({ where: { userId: session.user.id } });
       if (existing) {
         await tx.businessProfile.update({
           where: { userId: session.user.id },
@@ -149,15 +125,7 @@ export async function updateProfile(formData: unknown) {
         });
       } else if (businessName) {
         await tx.businessProfile.create({
-          data: {
-            userId: session.user.id,
-            businessName,
-            industry: industry as any,
-            stage: stage as any,
-            website,
-            instagramHandle,
-            description,
-          },
+          data: { userId: session.user.id, businessName, industry: industry as any, stage: stage as any, website, instagramHandle, description },
         });
       }
     }
@@ -166,8 +134,6 @@ export async function updateProfile(formData: unknown) {
   revalidatePath("/dashboard/settings");
   revalidatePath(`/profile/${session.user.id}`);
 }
-
-/* ─────────── Delete Skill ─────────── */
 
 export async function deleteSkill(skillId: string) {
   const session = await auth();

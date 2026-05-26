@@ -26,10 +26,18 @@ enum SkillLevel {
   EXPERT
 }
 
-enum BusinessStage {
-  IDEA
-  BUILDING
-  LAUNCHED
+enum ExchangeStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum TransactionType {
+  EXCHANGE
+  REWARD
+  PURCHASE
 }
 
 model User {
@@ -47,10 +55,16 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  businessProfile BusinessProfile?
-  skills          Skill[]
-  accounts        Account[]
-  sessions        Session[]
+  businessProfile   BusinessProfile?
+  skills            Skill[]
+  accounts          Account[]
+  sessions          Session[]
+  sentExchanges     ExchangeRequest[] @relation("SentExchanges")
+  receivedExchanges ExchangeRequest[] @relation("ReceivedExchanges")
+  transactionsFrom  Transaction[]     @relation("TransactionsFrom")
+  transactionsTo    Transaction[]     @relation("TransactionsTo")
+  reviewsGiven      Review[]          @relation("ReviewsGiven")
+  reviewsReceived   Review[]          @relation("ReviewsReceived")
 
   @@map("users")
 }
@@ -79,13 +93,71 @@ model Skill {
   description String?
   level       SkillLevel?
   isOffering  Boolean       @default(true)
+  isDeleted   Boolean       @default(false)
   coinValue   Int           @default(10)
   isDeleted   Boolean       @default(false)
   createdAt   DateTime      @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offeredIn    ExchangeRequest[] @relation("OfferedSkill")
+  requestedIn  ExchangeRequest[] @relation("RequestedSkill")
 
   @@map("skills")
+}
+
+model ExchangeRequest {
+  id               String         @id @default(cuid())
+  fromUserId       String
+  toUserId         String
+  offeredSkillId   String
+  requestedSkillId String
+  message          String?
+  status           ExchangeStatus @default(PENDING)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  fromUser        User          @relation("SentExchanges", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser          User          @relation("ReceivedExchanges", fields: [toUserId], references: [id], onDelete: Cascade)
+  offeredSkill    Skill         @relation("OfferedSkill", fields: [offeredSkillId], references: [id])
+  requestedSkill  Skill         @relation("RequestedSkill", fields: [requestedSkillId], references: [id])
+  transactions    Transaction[]
+  reviews         Review[]
+
+  @@map("exchange_requests")
+}
+
+model Transaction {
+  id                String          @id @default(cuid())
+  fromUserId        String?
+  toUserId          String
+  amount            Int
+  type              TransactionType
+  description       String?
+  relatedExchangeId String?
+  createdAt         DateTime        @default(now())
+
+  fromUser        User?            @relation("TransactionsFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser          User             @relation("TransactionsTo", fields: [toUserId], references: [id], onDelete: Cascade)
+  exchange        ExchangeRequest? @relation(fields: [relatedExchangeId], references: [id])
+
+  @@map("transactions")
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  reviewerId String
+  revieweeId String
+  exchangeId String
+  rating     Int
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  reviewer User            @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewee User            @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
+  exchange ExchangeRequest @relation(fields: [exchangeId], references: [id])
+
+  @@unique([reviewerId, exchangeId])
+  @@map("reviews")
 }
 
 model Account {

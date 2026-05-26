@@ -10,11 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,31 +41,16 @@ const profileSchema = z.object({
 });
 
 type ProfileUser = {
-  id: string;
-  name: string | null;
-  email: string | null;
-  image: string | null;
-  bio: string | null;
-  age: number | null;
-  location: string | null;
-  bizCoins: number;
+  id: string; name: string | null; email: string | null; image: string | null;
+  bio: string | null; age: number | null; location: string | null; bizCoins: number;
   businessProfile: {
-    id: string;
-    businessName: string;
-    industry: string | null;
-    description: string | null;
-    stage: string | null;
-    website: string | null;
-    instagramHandle: string | null;
+    id: string; businessName: string; industry: string | null;
+    description: string | null; stage: string | null;
+    website: string | null; instagramHandle: string | null;
   } | null;
   skills: {
-    id: string;
-    title: string;
-    category: string;
-    description: string | null;
-    level: string | null;
-    isOffering: boolean;
-    coinValue: number;
+    id: string; title: string; category: string; description: string | null;
+    level: string | null; isOffering: boolean; coinValue: number;
   }[];
 };
 
@@ -97,15 +78,10 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
   async function onSubmit(data: any) {
     setSaving(true);
     try {
-      await updateProfile({
-        ...data,
-        age: data.age ? Number(data.age) : undefined,
-      });
+      await updateProfile({ ...data, age: data.age ? Number(data.age) : undefined });
       toast.success("Profile updated");
       router.refresh();
-    } catch {
-      toast.error("Failed to update");
-    }
+    } catch { toast.error("Failed to update"); }
     setSaving(false);
   }
 
@@ -115,9 +91,7 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
       await deleteSkill(skillId);
       toast.success("Skill deleted");
       router.refresh();
-    } catch {
-      toast.error("Failed to delete");
-    }
+    } catch { toast.error("Failed to delete"); }
     setDeleting(null);
   }
 
@@ -126,108 +100,89 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
 
   return (
     <div className="space-y-8">
-      {/* Profile Form */}
+      <h1 className="text-2xl font-bold text-white">Settings</h1>
+
       <Card className="border-white/10 bg-white/[0.03]">
-        <CardHeader>
-          <CardTitle>Profile</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Profile</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>
-              <Input id="name" {...form.register("name")} />
+              <Input id="name" className="border-white/10" {...form.register("name")} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
-              <Textarea id="bio" {...form.register("bio")} rows={3} />
+              <Textarea id="bio" className="border-white/10" rows={3} {...form.register("bio")} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="location">Location</Label>
-                <Input id="location" {...form.register("location")} />
+                <Input id="location" className="border-white/10" {...form.register("location")} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="age">Age</Label>
-                <Input id="age" type="number" {...form.register("age")} />
+                <Input id="age" type="number" className="border-white/10" {...form.register("age")} />
               </div>
             </div>
-            <Button type="submit" disabled={saving}>
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Profile
+            <Button type="submit" disabled={saving} className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Save Profile
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      {/* Business Profile */}
       <Card className="border-white/10 bg-white/[0.03]">
-        <CardHeader>
-          <CardTitle>Business Profile</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Business Profile</CardTitle></CardHeader>
         <CardContent>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label>Business Name</Label>
-              <Input {...form.register("businessName")} />
+              <Input className="border-white/10" {...form.register("businessName")} />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Industry</Label>
-                <Select
-                  value={form.watch("industry") ?? "OTHER"}
-                  onValueChange={(v) => v && form.setValue("industry", v)}
-                >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {categories.map((c) => (
-                      <SelectItem key={c} value={c}>{c.replace(/_/g, " ")}</SelectItem>
-                    ))}
+                <Select value={form.watch("industry") ?? "OTHER"} onValueChange={(v) => v && form.setValue("industry", v)}>
+                  <SelectTrigger className="border-white/10"><SelectValue /></SelectTrigger>
+                  <SelectContent className="border-white/10 bg-gray-950">
+                    {categories.map((c) => (<SelectItem key={c} value={c}>{c.replace(/_/g, " ")}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <Label>Stage</Label>
-                <Select
-                  value={form.watch("stage")}
-                  onValueChange={(v) => v && form.setValue("stage", v)}
-                >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {stages.map((s) => (
-                      <SelectItem key={s} value={s}>{s}</SelectItem>
-                    ))}
+                <Select value={form.watch("stage")} onValueChange={(v) => v && form.setValue("stage", v)}>
+                  <SelectTrigger className="border-white/10"><SelectValue /></SelectTrigger>
+                  <SelectContent className="border-white/10 bg-gray-950">
+                    {stages.map((s) => (<SelectItem key={s} value={s}>{s}</SelectItem>))}
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="space-y-2">
               <Label>Website</Label>
-              <Input {...form.register("website")} placeholder="https://" />
+              <Input className="border-white/10" placeholder="https://" {...form.register("website")} />
             </div>
             <div className="space-y-2">
               <Label>Instagram</Label>
-              <Input {...form.register("instagramHandle")} placeholder="@brand" />
+              <Input className="border-white/10" placeholder="@brand" {...form.register("instagramHandle")} />
             </div>
             <div className="space-y-2">
               <Label>Description</Label>
-              <Textarea {...form.register("description")} rows={3} />
+              <Textarea className="border-white/10" rows={3} {...form.register("description")} />
             </div>
-            <Button type="submit" disabled={saving}>
-              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save Business Profile
+            <Button type="submit" disabled={saving} className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Save Business
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      {/* Skills Management */}
       <Card className="border-white/10 bg-white/[0.03]">
-        <CardHeader>
-          <CardTitle>Your Skills</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Your Skills</CardTitle></CardHeader>
         <CardContent className="space-y-6">
           <div>
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
               <Coins className="h-4 w-4 text-amber-400" /> Skills You Offer
             </h3>
             {offered.length === 0 ? (
@@ -237,17 +192,14 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
                 {offered.map((s) => (
                   <div key={s.id} className="flex items-center justify-between rounded-lg border border-white/10 px-4 py-3">
                     <div>
-                      <p className="text-sm font-medium">{s.title}</p>
+                      <p className="text-sm font-medium text-white">{s.title}</p>
                       <div className="flex gap-2 mt-1">
                         <Badge variant="secondary" className="text-xs">{s.category.replace(/_/g, " ")}</Badge>
                         <Badge variant="outline" className="text-xs">{s.level} · {s.coinValue} BC</Badge>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleDeleteSkill(s.id)}
-                      disabled={deleting === s.id}
-                      className="text-destructive hover:text-destructive/80"
-                    >
+                    <button onClick={() => handleDeleteSkill(s.id)} disabled={deleting === s.id}
+                      className="text-destructive hover:text-destructive/80">
                       {deleting === s.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                     </button>
                   </div>
@@ -255,11 +207,9 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
               </div>
             )}
           </div>
-
           <Separator className="bg-white/10" />
-
           <div>
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
               <Coins className="h-4 w-4 text-blue-400" /> Skills You Need
             </h3>
             {needed.length === 0 ? (
@@ -269,17 +219,14 @@ export function SettingsForm({ user }: { user: ProfileUser }) {
                 {needed.map((s) => (
                   <div key={s.id} className="flex items-center justify-between rounded-lg border border-white/10 px-4 py-3">
                     <div>
-                      <p className="text-sm font-medium">{s.title}</p>
+                      <p className="text-sm font-medium text-white">{s.title}</p>
                       <div className="flex gap-2 mt-1">
                         <Badge variant="secondary" className="text-xs">{s.category.replace(/_/g, " ")}</Badge>
                         <Badge variant="outline" className="text-xs">{s.level} · {s.coinValue} BC</Badge>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleDeleteSkill(s.id)}
-                      disabled={deleting === s.id}
-                      className="text-destructive hover:text-destructive/80"
-                    >
+                    <button onClick={() => handleDeleteSkill(s.id)} disabled={deleting === s.id}
+                      className="text-destructive hover:text-destructive/80">
                       {deleting === s.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                     </button>
                   </div>

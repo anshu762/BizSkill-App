@@ -6,7 +6,6 @@ import { ArrowLeft } from "lucide-react";
 
 export function BackButton() {
   const router = useRouter();
-
   return (
     <Button
       variant="ghost"

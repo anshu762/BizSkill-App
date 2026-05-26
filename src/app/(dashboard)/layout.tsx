@@ -8,12 +8,12 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  if (!session) redirect("/auth/signin");
+  if (!session?.user?.id) redirect("/auth/signin");
 
   return (
     <div className="flex min-h-screen">
       <DashboardSidebar />
-      <main className="ml-64 flex-1">{children}</main>
+      <main className="ml-64 flex-1 p-8">{children}</main>
     </div>
   );
 }
