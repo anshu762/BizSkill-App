@@ -19,6 +19,7 @@ import {
   Handshake,
 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
+import { ExchangeModal } from "@/components/ExchangeModal";
 
 export default async function ProfilePage({
   params,
@@ -59,6 +60,19 @@ export default async function ProfilePage({
 
   const offered = user.skills.filter((s) => s.isOffering);
   const needed = user.skills.filter((s) => !s.isOffering);
+
+  // Current user's skills for exchange modal
+  const currentUser = !isOwnProfile && session
+    ? await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          skills: {
+            where: { isDeleted: false, isOffering: true },
+            select: { id: true, title: true, coinValue: true },
+          },
+        },
+      })
+    : null;
 
   return (
     <div className="min-h-screen">
