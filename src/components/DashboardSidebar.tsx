@@ -15,7 +15,7 @@ const navLinks = [
   { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
   { href: "/dashboard/exchanges", label: "Exchanges", icon: ArrowLeftRight },
   { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
-  { href: "/profile", label: "Profile", icon: User },
+
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
